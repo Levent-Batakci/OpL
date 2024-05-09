@@ -15,8 +15,8 @@ f3 = @(x) sin(x); df3 = @(x) cos(x);
 poly = @(x,y,a,b) (x'*y + a).^b;
 
 %parameters
-n = 100;
-m = 100;
+n = 1000;
+m = 1000;
 
 % Kernel (lame choices for now)
 Q = @(x,y) (x*y.'+1).^2;
@@ -31,9 +31,9 @@ phi = @(f) f(xphi);
 ypsy = linspace(0,1,m).';  % COLUMN vector
 psy = @(f) f(ypsy);
 
-% U = [phi(f1) phi(f2) phi(f3)];
-% V = [psy(df1) psy(df2) psy(df3)];
-U = [phi(f2)];
-V = [psy(df2)];
+U = [phi(f1) phi(f2) phi(f3)];
+V = [psy(df1) psy(df2) psy(df3)];
+% U = [phi(f2)];
+% V = [psy(df2)];
 [G, f, chi] = learn(U,V,m,S,K,ypsy);
 

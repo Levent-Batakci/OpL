@@ -31,7 +31,7 @@ def KLearn(U,V,m,S,K,Y):
     
     # Compute the recovery function
     chi_inner = K(Y,Y) + eta*np.identity(m);
-    chi = (lambda V_,y : K(d2(y),Y) @ np.linalg.solve(chi_inner, V_.T));
+    chi = (lambda V_,y : K(d2(y),Y) @ np.linalg.solve(chi_inner, V_));
     
     # Solve the generalized interpolation from R^n -> R^m
     if(len(np.shape(U))==1):

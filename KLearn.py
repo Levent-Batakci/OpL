@@ -75,35 +75,47 @@ def KLearn2(U,V,m,K,Y):
     return G_approx,f;
 """
 
-def OpLearn(U,V, S,SGrid, K,KGrid ,Y):
+def OpLearn(U,V, S,SGrid, K,KGrid ,Y, report_scores = False):
     
     # Compute the recovery function
     chi = ( lambda V_ : KLearnCV(Y,V_,K,KGrid,10) )
     
     # Generalized interpolation thingy
-    f = KLearnCV(U.T,V.T,S,SGrid,5);
+    if(report_scores):
+        f,scores = KLearnCV(U.T,V.T,S,SGrid,5, report_scores=True)
+    else:
+        f = KLearnCV(U.T,V.T,S,SGrid,5, report_scores=False)
     
     # Get the approximate operator
     G_approx = lambda U_ : chi(f(U_.T).T);
-    return G_approx, f   
+    if(report_scores):
+        return G_approx,scores
+    else:
+        return G_approx
 
-def KLearnCV(X,Y,Kernel,grid,n_splits):
+def KLearnCV(X,Y,Kernel,grid,n_splits, report_scores = False):
     """
     Uses the kernel trick with cross validation
     """   
     cv = 10000; # Largest positive number I'm aware of
     g = "none";
     model = "none";
+    scores = [];
     
     for g_ in grid:
         K = Kernel(g_)
         cv_ = KCV(X,Y,K,n_splits)
+        scores.append(cv_)
         if(cv_ < cv):
             cv = cv_
             g = g_
-            model = KernelTrick(X,Y,K)
+            model = KernelTrick(X,Y,K)        
     print("Optimal gamma = " + str(g))
-    return model;
+    
+    if(report_scores):
+        return model,scores
+    else:
+        return model
             
 def KCV(X,Y,K,n_splits):
     """
@@ -122,7 +134,7 @@ def KCV(X,Y,K,n_splits):
         G = KernelTrick(Xtrain,Ytrain,K)
         y_mod = G(Xtest)
         cv += mse(y_mod,Ytest) / n_splits;
-        
+    
     return cv;
 
 def mse(a,b):

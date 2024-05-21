@@ -78,22 +78,22 @@ def KLearn2(U,V,m,K,Y):
 def OpLearn(U,V, S,SGrid, K,KGrid ,Y, report_scores = False):
     
     # Compute the recovery function
-    chi = ( lambda V_ : KLearnCV(Y,V_,K,KGrid,10) )
+    chi = ( lambda V_ : KLearnCV(Y,V_,K,KGrid,10,report_scores=True) )
     
     # Generalized interpolation thingy
     if(report_scores):
-        f,scores = KLearnCV(U.T,V.T,S,SGrid,5, report_scores=True)
+        f,scores,g = KLearnCV(U.T,V.T,S,SGrid,5, report_scores=True)
     else:
         f = KLearnCV(U.T,V.T,S,SGrid,5, report_scores=False)
     
     # Get the approximate operator
     G_approx = lambda U_ : chi(f(U_.T).T);
     if(report_scores):
-        return G_approx,scores
+        return G_approx,scores,g
     else:
         return G_approx
 
-def KLearnCV(X,Y,Kernel,grid,n_splits, report_scores = False):
+def KLearnCV(X,Y,Kernel,grid,n_splits, report_scores = False): # False
     """
     Uses the kernel trick with cross validation
     """   
@@ -113,7 +113,7 @@ def KLearnCV(X,Y,Kernel,grid,n_splits, report_scores = False):
     print("Optimal gamma = " + str(g))
     
     if(report_scores):
-        return model,scores
+        return model,scores,g
     else:
         return model
             

@@ -1,0 +1,12 @@
+numpy
+scipy
+scikit-learn
+matplotlib
+jupyterlab
+
+# notebook 02 only
+jax
+
+# DeepONet baseline (notebook 06) only
+deepxde
+torch

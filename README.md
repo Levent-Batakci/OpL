@@ -3,7 +3,7 @@
 Final project for AMATH 563 (*Inferring Structure of Complex Systems*), University of Washington, Spring 2024.
 **Team:** Levent Batakci, Qi Liang, Fisher Ng, Arjun Sethi-Olowin · **Report:** [`report/AMATH563_Final_Report.pdf`](report/AMATH563_Final_Report.pdf)
 
-Operator learning approximates a map between function spaces, $\mathcal{G}^\dagger : u \mapsto v$, from example input–output pairs. We implement the kernel encoder/decoder method of Batlle, Darcy, Hosseini & Owhadi (2023), test it on eight linear and nonlinear operators, and compare it against DeepONet.
+Operator learning approximates a map between function spaces, $\mathcal{G}^{\dagger} : u \mapsto v$, from example input–output pairs. We implement the kernel encoder/decoder method of Batlle, Darcy, Hosseini & Owhadi (2023), test it on eight linear and nonlinear operators, and compare it against DeepONet.
 
 ![Learning the squaring operator](figures/Square_Operator.png)
 *Squaring operator $u \mapsto u^2$. Top: input test functions, true outputs, learned outputs. Bottom: cross-validation curves for both kernels and the pointwise error. 1,000 training functions.*
@@ -12,11 +12,11 @@ Operator learning approximates a map between function spaces, $\mathcal{G}^\dagg
 
 Each function is represented by its values at 100 equispaced collocation points on $[0,1]$. The learned operator is
 
-$$
-\mathcal{G}^*(u) = \left(\psi^{-1} \circ f^* \circ \phi\right)(u), \qquad f^*(\cdot) = K(\cdot,\Phi)\,K(\Phi,\Phi)^{-1}\,\Psi ,
-$$
+```math
+\mathcal{G}^{\ast}(u) = \left(\psi^{-1} \circ f^{\ast} \circ \phi\right)(u), \qquad f^{\ast}(\cdot) = K(\cdot,\Phi)\,K(\Phi,\Phi)^{-1}\,\Psi
+```
 
-where $\phi,\psi$ are pointwise evaluation maps, $f^*$ is kernel interpolation between the encoded inputs and outputs, and $\psi^{-1}$ is a second kernel regression that recovers a function from its point values. Both kernels are RBF, $k(x,x') = \exp(-\gamma\lVert x-x'\rVert_2^2)$, with a small nugget for stability.
+where $\phi,\psi$ are pointwise evaluation maps, $f^{\ast}$ is kernel interpolation between the encoded inputs and outputs, and $\psi^{-1}$ is a second kernel regression that recovers a function from its point values. Both kernels are RBF, $k(x,x') = \exp(-\gamma\lVert x-x'\rVert_2^2)$, with a small nugget for stability.
 
 - **Implemented from scratch** in NumPy: both applications of the kernel trick and the k-fold cross-validation used to select $\gamma$ (10-fold for the recovery kernel, 5-fold for the operator kernel). See [`KLearn.py`](KLearn.py).
 - **Training data:** random smooth functions sampled from a Gaussian process (RBF covariance, Cholesky factorization), normalized to unit norm.
@@ -26,7 +26,7 @@ where $\phi,\psi$ are pointwise evaluation maps, $f^*$ is kernel interpolation b
 ## Results
 
 ![Error vs. number of training functions](figures/Error_Plots_F.png)
-*Absolute and relative $L^2$ and $L^\infty$ test errors against the number of training functions.*
+*Absolute and relative $L^{2}$ and $L^{\infty}$ test errors against the number of training functions.*
 
 - Smoothing operators are easiest. The integral operators reach relative $L^2$ errors near $10^{-5}$, and the identity, squaring, and sine operators reach about $10^{-4}$. The derivative stays between $10^{-3}$ and $10^{-2}$. The cube root is not learned with RBF kernels.
 - Linear operators improve sharply from 10 to 100 training functions and plateau beyond about 1,000.
